@@ -1,0 +1,44 @@
+路由简单的来说就是根据用户请求的 URL 链接来判断对应的处理程序，并返回处理结果，
+也就是 URL 与 Django 的视图建立映射关系。
+Django1.1.x 版本
+ url() 方法：普通路径和正则路径均可使用，需要自己手动添加正则首位限制符号;
+Django 2.2.x 之后的版本
+ path：用于普通路径，不需要自己手动添加正则首位限制符号，底层已经添加。
+ re_path：用于正则路径，需要自己手动添加正则首位限制符号。
+总结：Django1.1.x 版本中的 url 和 Django 2.2.x 版本中的 re_path 用法相同。
+
+参数对应问题：
+  views 中除了 request，其他形参的数量要与 urls 中的分组数量一致， 并且 views 中的形参名称要与 urls 中的组名对应。
+
+路由分发(include)
+ 存在问题：Django 项目里多个app目录共用一个 urls 容易造成混淆，后期维护也不方便。
+ 解决：使用路由分发（include），让每个app目录都单独拥有自己的 urls。
+ 步骤：
+   1、在每个 app 目录里都创建一个 urls.py 文件。
+   2、在项目名称目录下的 urls 文件里，统一将路径分发给各个 app 目录。
+
+反向解析
+随着功能的增加，路由层的 url 发生变化，就需要去更改对应的视图层和模板层的 url，非常麻烦，不便维护。
+这时我们可以利用反向解析，当路由层 url 发生改变，在视图层和模板层动态反向解析出更改后的 url，免去修改的操作。
+反向解析一般用在模板中的超链接及视图中的重定向。
+在 urls.py 中给路由起别名，name="路由别名"。
+   path("login1/", views.login, name="login")
+   在 views.py 中，从 django.urls 中引入 reverse，利用 reverse("路由别名") 反向解析:
+   return redirect(reverse("login"))
+正则路径（无名分组）
+  在 urls.py 中给路由起别名，name="路由别名"。
+  re_path(r"^login/([0-9]{2})/$", views.login, name="login")
+  在 views.py 中，从 django.urls 中引入 reverse，利用 reverse("路由别名"，args=(符合正则匹配的参数,)) 反向解析；
+正则路径（有名分组）
+   在 urls.py 中给路由起别名，name="路由别名"。
+   re_path(r"^login/(?P<year>[0-9]{4})/$", views.login, name="login")
+html文件
+   <form action="{% url 'login' %}" method="post">
+   include:model_url
+       例如：app02:search
+include命名
+   定义命名空间（include 里面是一个元组）格式如下：
+   include(("app名称：urls"，"app名称"))
+   reverse("app名称：路由别名")
+   在 templates 模板的 HTML 文件中使用名称空间，语法格式如下：
+       {% url "app名称：路由别名" %}

@@ -1,0 +1,41 @@
+# form post and get
+在模板的末尾，我们增加一个 rlt 记号，为表格处理结果预留位置。
+表格后面还有一个 {% csrf_token %} 的标签。csrf 全称是 Cross Site Request Forgery。这是 Django 提供的防止伪装提交请求的功能。POST 方法
+提交的表格，必须有此标签。
+
+# HttpRequest对象包含当前请求URL的一些信息：
+method
+请求中使用的HTTP方法的字符串表示。全大写表示。例如:
+if request.method == 'GET':
+    do_something()
+elif request.method == 'POST':
+    do_something_else()
+Request
+强烈建议使用GET and POST,因为这两个属性更加显式化，写出的代码也更易理解。
+FILES
+包含所有上传文件的类字典对象。FILES中的每个Key都是<input type="file" name="" />标签中name属性的值. FILES中的每个value 同时也是一个标准Python字典对象，包含下面三个Keys:
+   filename: 上传文件名,用Python字符串表示
+   content-type: 上传文件的Content type
+   content: 上传文件的原始内容
+注意：只有在请求方法是POST，并且请求页面中<form>有enctype="multipart/form-data"属性时FILES才拥有数据。否则，FILES 是一个空字典。
+user
+是一个django.contrib.auth.models.User 对象，代表当前登录的用户。
+如果访问用户当前没有登录，user将被初始化为django.contrib.auth.models.AnonymousUser的实例。
+你可以通过user的is_authenticated()方法来辨别用户是否登录：
+body
+数据类型是二进制字节流，是原生请求体里的参数内容，在 HTTP 中用于 POST，因为 GET 没有请求体。
+在 HTTP 中不常用，而在处理非 HTTP 形式的报文时非常有用，例如：二进制图片、XML、Json 等。
+path
+获取 URL 中的路径部分，数据类型是字符串。
+GET
+包含所有HTTP GET参数的类字典对象。参见QueryDict 文档。
+POST
+包含所有HTTP POST参数的类字典对象。参见QueryDict 文档。
+服务器收到空的POST请求的情况也是有可能发生的。也就是说，表单form通过HTTP POST方法提交请求，但是表单中可以没有数据。因此，不能使用语句if request.POST来
+判断是否使用HTTP POST方法；应该使用if request.method == "POST" (参见本表的method属性)。
+注意: POST不包括file-upload信息。参见FILES属性。
+
+HttpResponse 对象
+响应对象主要有三种形式：HttpResponse()、render()、redirect()。
+HttpResponse(): 返回文本，参数为字符串，字符串中写文本内容。如果参数为字符串里含有 html 标签，也可以渲染。
+render(): 返回文本，第一个参数为 request，第二个参数为字符串（页面名称），第三个参数为字典（可选参数，向页面传递的参数：键为页面参数名，值为views参数名）。

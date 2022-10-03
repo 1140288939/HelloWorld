@@ -1,0 +1,54 @@
+创建项目
+django-admin startproject HelloWorld
+运行服务器
+python manage.py runserver 127.0.0.1:8000
+
+Django 规定，如果要使用模型，必须要创建一个 app。我们使用以下命令创建一个 TestModel 的 app:
+命令：django-admin startapp Modelname
+结构：
+HelloWorld
+|-- HelloWorld
+|-- manage.py
+...
+|-- TestModel
+|   |-- __init__.py
+|   |-- admin.py
+|   |-- models.py
+|   |-- tests.py
+|   `-- views.py
+settings.py: 文件代码：
+  DATABASES = {
+    'default':
+    {
+        'ENGINE': 'django.db.backends.mysql',    # 数据库引擎
+        'NAME': 'runoob', # 数据库名称
+        'HOST': '127.0.0.1', # 数据库地址，本机 ip 地址 127.0.0.1
+        'PORT': 3306, # 端口
+        'USER': 'root',  # 数据库用户名
+        'PASSWORD': '123456', # 数据库密码
+    }
+  }
+在setting文件中的installed-app添加新加入的app；
+
+# 创建表结构
+python manage.py migrate
+# 修改表结构也是按照下面的来
+# 让 Django 知道我们在我们的模型有一些变更
+python manage.py makemigrations TestModel
+# 创建表结构
+python manage.py migrate TestModel
+# 类名代表了数据库表名
+# 表名组成结构为：应用名_类名（如：TestModel_test）。
+
+extends继承
+      {# 导入tag文件 #}
+      {# 继承必须在tag导入的第一个#}
+      {% extends "nav.html" %}
+      # 加载tag
+      {% load my_tags %}
+      {# 图片等 #}
+      {% load static %}
+只有写在下面的结构中才会被显示出来，其余不会显示
+      {% block mainbody %}
+      add
+      {% endblock %}

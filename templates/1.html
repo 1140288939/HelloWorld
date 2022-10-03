@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>show</title>
+</head>
+<body>
+      {# 导入tag文件 #}
+      {# 继承必须在tag导入的第一个#}
+      {% extends "nav.html" %}
+      {% load my_tags %}
+      {# 图片等 #}
+      {% load static %}
+
+      {% block mainbody %}
+           <p>继承了 nav.html 文件</p>
+      <div style="background-color:purple;padding:21px">
+           <h1>继承</h1>
+      </div>
+      <h1>upper：{{ hello|upper }}</h1>
+      <h1>length：上面变量的长度是：{{ hello|upper|length }}</h1>
+      <h1>default：{{ show | default:"show" }}</h1>
+      <h1>{{ list }}</h1>
+      <h1>{{ list.0 }}</h1>
+      <h1>{{ list.1 }}</h1>
+      <h2>文件的大小(filesizeformat)是{{num|filesizeformat}}</h2>
+      <div style="background-color:cyan;padding:21px">
+          <h1>datetime:</h1>
+          <p>datetime is {{datetime}}</p>
+          <p>datetime is {{datetime|date:"Y-m-d H:i:s" }}</p>
+      </div>
+      <div style="background-color:purple;padding:21px">
+          <h1>truncatechars:</h1>
+          <p>truncatecharsis {{hello|truncatechars:5}}</p>
+      </div>
+      <div style="background-color:cyan;padding:21px">
+          <h1>safe:</h1>
+          <p>{{views_str|safe}}</p>
+          <p>{{views_str}}</p>
+          <p>{{img|safe}}</p>
+          <p>{{img}}</p>
+      </div>
+      <div style="background-color:purple;padding:21px">
+         <img src="{% static 'scene1380.jpg' %}" alt="My image">
+      </div>
+      <div style="background-color:cyan;padding:21px">
+          <h1>if else:</h1>
+          <p> {% if num > 90 %}
+              优秀
+              {% elif num > 60 %}
+              合格
+              {% else%}
+              不及格奥
+              {% endif %}</p>
+      </div>
+      <div style="background-color:purple;padding:21px">
+          <h1>for:</h1>
+          <h2>list show</h2>
+          <ul>
+              {% for i in list %}
+              <li>{{i}}</li>
+              {% endfor %}
+          </ul>
+          <h2>dict show</h2>
+          <ul>
+              {% for i,j in dict.items %}
+              <li>{{i}}------{{j}}</li>
+              {% endfor %}
+          </ul>
+          <h2>forloop show</h2>
+          <ul>
+              {% for i in list %}
+                  {{ forloop.counter }}<br />
+                  {{ forloop.counter0 }}<br />
+                  {{ forloop.revcounter }}<br />
+                  {{ forloop.revcounter0 }}<br />
+                  {{ forloop.first }}<br />
+                  {{ forloop.last }}<br />
+                  --------------------<br />
+              <!--如果for循环值为空则输出指定内容-->
+              {% empty %}
+                空空如也～
+              {% endfor %}
+          </ul>
+          {% for athlete in athlete_list %}
+          <h2>{{ athlete.name }}</h2>
+          <ul>
+          {% for sport in athlete.hobby%}
+          <li>{{ sport }}</li>
+           {% endfor %}
+          </ul>
+          {% endfor %}
+      </div>
+      <div style="background-color:cyan;padding:21px">
+          {# 这是一个注释 #}
+          <h1>ifequal:</h1>
+          {% ifequal user "1" %}
+          <p>welcome!</p>
+          {% else %}
+          <p>NO</p>
+          {% endifequal %}
+          <h1>ifnotequal:</h1>
+          {% ifnotequal user "1" %}
+          <p>welcome!</p>
+          {% else %}
+          <p>NO</p>
+          {% endifnotequal %}
+      </div>
+     <div style="background-color:purple;padding:21px">
+         {% include "nav.html" %}
+     </div>
+    <div>
+        <h1>csrf_token</h1>
+        <p>csrf_token 用于form表单中，作用是跨站请求伪造保护。
+        如果不用 {% csrf_token %} 标签，在用 form 表单时，要再次跳转页面会报 403 权限错误。
+        用了{% csrf_token %} 标签，在 form 表单提交数据时，才会成功。
+        <p>
+        解析：
+        首先，向服务器发送请求，获取登录页面，此时中间件 csrf 会自动生成一个隐藏input标签，该标签里的 value 属性的值是一个随机的字符串，用户获取到登录页面的同时也获取到了这个隐藏的input标签。
+        然后，等用户需要用到form表单提交数据的时候，会携带这个 input 标签一起提交给中间件 csrf，原因是 form 表单提交数据时，会包括所有的 input 标签，中间件 csrf 接收到数据时，会判断，这个随机字符串是不是第一次它发给用户的那个，如果是，则数据提交成功，如果不是，则返回403权限错误。</p>
+    </p>
+    </div>
+    <div style="background-color:cyan;padding:21px">
+         <h1>register.filter:</h1>
+          <pre>
+              @register.filter
+              def my_filter(v1, v2):
+                  return v1 * v2
+              input:11|my_filter:22
+          </pre>
+        <p> out:{{ 11|my_filter:22 }}</p>
+        <h1>register.simple_tag:</h1>
+          <pre>
+              @register.simple_tag
+              def my_tag1(v1, v2, v3):
+                  return v1 * v2 * v3
+              in:my_tag1 11 22 33
+          </pre>
+        <p> out:{% my_tag1 11 22 33 %}</p>
+        <pre>
+              @register.simple_tag
+              def my_html(v1, v2):
+                  temp_html = "input type='text' id='%s' class='%s'" %(v1, v2)
+                  return mark_safe(temp_html)
+              input:my_html "zzz" "xxx"
+        </pre>
+        <p> out:{% my_html "zzz" "xxx" %}</p>
+     </div>
+    {% endblock %}
+</body>
+</html>

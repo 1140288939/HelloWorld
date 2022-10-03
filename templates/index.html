@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome</title>
+</head>
+<body>
+         <h1>
+             Welcome to Django!
+         </h1>
+    <form action="{% url 'app02:search' %}" method="get">
+        <input type="submit" value="search">
+    </form>
+        <form action="{% url 'app02:search_form' %}" method="get">
+        <input type="submit" value="search_form">
+    </form>
+    <form action="{% url 'app02:search_post' %}" method="post">
+        <input type="submit" value="search_post">
+    </form>
+</body>
+</html>
